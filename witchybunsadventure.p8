@@ -1,7 +1,7 @@
 pico-8 cartridge // http://www.pico-8.com
 version 34
 __lua__
-
+--split files
 #include main.p8
 #include components.p8
 #include systems.p8
