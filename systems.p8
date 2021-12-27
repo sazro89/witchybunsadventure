@@ -104,6 +104,15 @@ function load_systems()
     e.pos.y+=e.phys.yv
   end)
 
+  -- Camera
+
+  s_camerapos=sys({"pos","cam"},function(e)
+  local x=flr(e.pos.x/(16*8))*16*8
+  local y=flr(e.pos.y/(16*8))*16*8
+  camera(x,y)
+
+  end)
+
   -- Drawing
   s_draw=sys({"pos","draw"},function(e)
     local anm=e.draw.anims[e.draw.curanim or "default"]
