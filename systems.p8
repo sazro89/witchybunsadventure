@@ -67,42 +67,56 @@ function load_systems()
   end)
 
   -- Map Collisions
-  s_collisions=sys({"pos","phys","mcol"},function(e)
-    -- simulate new position after velocity update
-    local dx=e.pos.x+e.phys.xv
-    local dy=e.pos.y+e.phys.yv
+  s_collisions=sys({"pos","phys","mcol","coll"},function(e)
+    local x,y,xoff,yoff,width,height,pos = e.pos.x,e.pos.y,e.coll.xoff,e.coll.yoff,e.coll.width,e.coll.height,e.pos
 
-    -- check map flags
-    local mcol=function(x,y,w,h)
-      return fget(mget(x\8,y\8),0)
-          or fget(mget((x+w)\8,(y+h)\8),0)
+    local is_solid = function(x,y)
+      return fget(mget(x,y),0)
     end
 
-    -- check if in wall per direction
-    -- if so, kill velocity and snap to wall
-    if mcol(dx,e.pos.y,0,7) then
-      e.phys.xv=0
-      e.pos.x=dx\8*8+8
+    local move_x = function(obj, amt)
+      if (amt == 0) return
+      local step = sgn(amt)
+      for i=0,abs(amt) do
+        if not (is_solid((pos.x+xoff+step)\8,(y+yoff)\8) or
+           is_solid((pos.x+xoff+width-1+step)\8,(y+yoff)\8) or
+           is_solid((pos.x+xoff+step)\8,(y+yoff+height-1)\8) or
+           is_solid((pos.x+xoff+width-1+step)\8,(y+yoff+height-1)\8)) then
+          pos.x += step
+        else
+          e.phys.xv = 0
+          break
+        end
+      end
     end
-    if mcol(dx+7,e.pos.y,0,7) then
-      e.phys.xv=0
-      e.pos.x=dx\8*8
+
+    local move_y = function(obj, amt)
+      if (amt == 0) return
+      local step = sgn(amt)
+      for i=0,abs(amt) do
+        if not (is_solid((x+xoff)\8,(pos.y+yoff+step)\8) or
+           is_solid((x+xoff+width-1)\8,(pos.y+yoff+step)\8) or
+           is_solid((x+xoff)\8,(pos.y+yoff+height-1+step)\8) or
+           is_solid((x+xoff+width-1)\8,(pos.y+yoff+height-1+step)\8)) then
+          pos.y+=step
+        else
+          e.phys.yv=0
+          break
+        end
+      end
     end
-    if mcol(e.pos.x,dy,7,0) then
-      e.phys.yv=0
-      e.pos.y=dy\8*8+8
-    end
-    if mcol(e.pos.x,dy+7,7,0) then
-      e.phys.yv=0
-      e.pos.y=dy\8*8
-    end
+
+    local amount=e.phys.xv
+    move_x(e,amount)
+    amount=e.phys.yv
+    move_y(e,amount)
   end)
 
-  -- Apply Velocity
-  s_movement=sys({"pos","phys"},function(e)
-    e.pos.x+=e.phys.xv
-    e.pos.y+=e.phys.yv
-  end)
+  -- Apply Velocity, now part of collision
+  -- s_movement=sys({"pos","phys"},function(e)
+  --   e.pos.x+=e.phys.xv
+  --   e.pos.y+=e.phys.yv
+  -- end)
 
   -- Drawing
   s_draw=sys({"pos","draw"},function(e)

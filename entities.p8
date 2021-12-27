@@ -18,4 +18,5 @@ function mk_player(x,y)
       up={spd=5,frm={53,54},ext={59,60}},
       down={spd=5,frm={55,56},ext={57,58}}
    },true)
+   +c_collision(1,1,6,6)
 end

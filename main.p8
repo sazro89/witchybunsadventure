@@ -24,7 +24,7 @@ function _update()
   s_playeranim(entities)
   s_maxvelocity(entities)
   s_collisions(entities)
-  s_movement(entities)
+  -- s_movement(entities)
 end
 
 function _draw()

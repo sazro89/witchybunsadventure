@@ -19,6 +19,20 @@ function load_components()
     })
   end
 
+  -- collision object
+  -- relative to base sprite, stores the following values
+  -- x and y offsets, origin is the top left corner
+  -- width and height of the box
+  -- could just replace mcol with this?
+  c_collision=function(xoff,yoff,width,height)
+    return cmp("coll",{
+      xoff=xoff,
+      yoff=yoff,
+      width=width,
+      height=height
+    })
+  end
+
   -- drawable
   -- current anim
   -- animations
