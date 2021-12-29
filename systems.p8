@@ -107,9 +107,9 @@ function load_systems()
   -- Camera
 
   s_camerapos=sys({"pos","cam"},function(e)
-  local x=flr(e.pos.x/(16*8))*16*8
-  local y=flr(e.pos.y/(16*8))*16*8
-  camera(x,y)
+  local x=mid(64,flr(e.pos.x),448)
+  local y=mid(64,flr(e.pos.y),192)
+  camera(x-64,y-64)
 
   end)
 
