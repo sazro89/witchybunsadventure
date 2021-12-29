@@ -59,3 +59,10 @@ function load_components()
   -- map collidable
   c_mapcollidable=cmp"mcol"
 end
+
+  c_cam=function(x,y)
+    return cmp("cam", {
+      x=x,
+      y=y
+    })
+  end

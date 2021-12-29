@@ -112,6 +112,15 @@ function load_systems()
     move_y(e,amount)
   end)
 
+  -- Camera
+
+  s_camerapos=sys({"pos","cam"},function(e)
+  local x=mid(64,flr(e.pos.x),448)
+  local y=mid(64,flr(e.pos.y),192)
+  camera(x-64,y-64)
+
+  end)
+                        
   -- Apply Velocity, now part of collision
   -- s_movement=sys({"pos","phys"},function(e)
   --   e.pos.x+=e.phys.xv
