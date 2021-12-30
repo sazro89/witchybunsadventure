@@ -15,7 +15,7 @@ function load_components()
   -- friction
   c_physics=function(max,acc,fric) 
     return cmp("phys",{
-      xv=0,yv=0,max=max,acc=acc,fric=fric
+      xv=0,yv=0,max=max,acc=acc,fric=fric,xrem=0,yrem=0
     })
   end
 
@@ -57,7 +57,8 @@ function load_components()
   end
 
   -- map collidable
-  c_mapcollidable=cmp"mcol"
+  -- commented out until we have an explicit use for this
+  -- c_mapcollidable=cmp"mcol"
 end
 
   c_cam=function(x,y)

@@ -63,69 +63,93 @@ function load_systems()
     if(abs(p.yv)<0.01) p.yv=0
 
     local totalvel=abs(p.xv)+abs(p.yv)
-    if(totalvel>p.max) p.xv*=(p.max/totalvel) p.yv*=(p.max/totalvel)
+    if(totalvel>p.max) then 
+      p.xv*=(p.max/totalvel) 
+      p.yv*=(p.max/totalvel)
+    end
   end)
 
   -- Map Collisions
-  s_collisions=sys({"pos","phys","mcol","coll"},function(e)
+  -- removed mcol until we have an explicit use for it
+  s_collisions=sys({"pos","phys","coll"},function(e)
     local x,y,xoff,yoff,width,height,pos = e.pos.x,e.pos.y,e.coll.xoff,e.coll.yoff,e.coll.width,e.coll.height,e.pos
 
     local is_solid = function(x,y)
       return fget(mget(x,y),0)
     end
 
-    local move_x = function(obj, amt)
-      if (amt == 0) return
-      local step = sgn(amt)
-      for i=0,abs(amt) do
-        if not (is_solid((pos.x+xoff+step)\8,(y+yoff)\8) or
-           is_solid((pos.x+xoff+width-1+step)\8,(y+yoff)\8) or
-           is_solid((pos.x+xoff+step)\8,(y+yoff+height-1)\8) or
-           is_solid((pos.x+xoff+width-1+step)\8,(y+yoff+height-1)\8)) then
+    local is_solid_x = function(step, y_adjustment)
+      return (is_solid((pos.x+xoff+step)\8,(y+yoff+y_adjustment)\8) or
+              is_solid((pos.x+xoff+width-1+step)\8,(y+yoff+y_adjustment)\8) or
+              is_solid((pos.x+xoff+step)\8,(y+yoff+height-1+y_adjustment)\8) or
+              is_solid((pos.x+xoff+width-1+step)\8,(y+yoff+height-1+y_adjustment)\8))
+    end
+
+    local is_solid_y = function(step, x_adjustment)
+      return (is_solid((x+xoff+x_adjustment)\8,(pos.y+yoff+step)\8) or
+              is_solid((x+xoff+width-1+x_adjustment)\8,(pos.y+yoff+step)\8) or
+              is_solid((x+xoff+x_adjustment)\8,(pos.y+yoff+height-1+step)\8) or
+              is_solid((x+xoff+width-1+x_adjustment)\8,(pos.y+yoff+height-1+step)\8))
+    end
+
+    local move_x = function(amt)
+      e.phys.xrem+=amt
+      local move=flr(e.phys.xrem)
+      if (move==0) return
+      e.phys.xrem-=move
+      local step=sgn(amt)
+      while(move!=0) do
+        if not is_solid_x(step, 0) then
+          pos.x+=step
+        elseif not is_solid_x(step, 1) then
           pos.x += step
+          pos.y += 1
+        elseif not is_solid_x(step, -1) then
+          pos.x += step
+          pos.y -= 1
         else
           e.phys.xv = 0
           break
         end
+        move-=step
       end
     end
 
-    local move_y = function(obj, amt)
-      if (amt == 0) return
-      local step = sgn(amt)
-      for i=0,abs(amt) do
-        if not (is_solid((x+xoff)\8,(pos.y+yoff+step)\8) or
-           is_solid((x+xoff+width-1)\8,(pos.y+yoff+step)\8) or
-           is_solid((x+xoff)\8,(pos.y+yoff+height-1+step)\8) or
-           is_solid((x+xoff+width-1)\8,(pos.y+yoff+height-1+step)\8)) then
+    local move_y = function(amt)
+      e.phys.yrem+=amt
+      local move=flr(e.phys.yrem)
+      if (move==0) return
+      e.phys.yrem-=move
+      local step=sgn(amt)
+      while(move!=0) do
+        if not is_solid_y(step,0) then
           pos.y+=step
+        elseif not is_solid_y(step, 1) then
+          pos.y += step
+          pos.x += 1
+        elseif not is_solid_y(step, -1) then
+          pos.y += step
+          pos.x -= 1
         else
           e.phys.yv=0
           break
         end
+        move-=step
       end
     end
 
     local amount=e.phys.xv
-    move_x(e,amount)
+    move_x(amount)
     amount=e.phys.yv
-    move_y(e,amount)
+    move_y(amount)
   end)
 
   -- Camera
-
   s_camerapos=sys({"pos","cam"},function(e)
-  local x=mid(64,flr(e.pos.x),448)
-  local y=mid(64,flr(e.pos.y),192)
-  camera(x-64,y-64)
-
+    local x=mid(64,flr(e.pos.x),448)
+    local y=mid(64,flr(e.pos.y),192)
+    camera(x-64,y-64)
   end)
-                        
-  -- Apply Velocity, now part of collision
-  -- s_movement=sys({"pos","phys"},function(e)
-  --   e.pos.x+=e.phys.xv
-  --   e.pos.y+=e.phys.yv
-  -- end)
 
   -- Drawing
   s_draw=sys({"pos","draw"},function(e)
