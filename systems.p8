@@ -146,9 +146,18 @@ function load_systems()
 
   -- Camera
   s_camerapos=sys({"pos","cam"},function(e)
-    local x=mid(64,flr(e.pos.x),448)
-    local y=mid(64,flr(e.pos.y),192)
-    camera(x-64,y-64)
+    local targetx = mid(64,flr(e.pos.x),448)
+    local targety = mid(64,flr(e.pos.y),192)
+
+    local lerp=0.01^(1/60)
+
+    fromx = e.cam.x
+    fromy = e.cam.y
+
+    e.cam.x = fromx + (targetx - 60 - fromx) * (1 - lerp)
+    e.cam.y = fromy + (targety - 60 - fromy) * (1 - lerp)
+    
+    camera(e.cam.x,e.cam.y)
   end)
 
   -- Drawing
