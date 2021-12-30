@@ -62,10 +62,10 @@ function load_systems()
     if(abs(p.xv)<0.01) p.xv=0
     if(abs(p.yv)<0.01) p.yv=0
 
-    local totalvel=abs(p.xv)+abs(p.yv)
-    if(totalvel>p.max) then 
-      p.xv*=(p.max/totalvel) 
-      p.yv*=(p.max/totalvel)
+    local vectorvel=sqrt(p.xv*p.xv+p.yv*p.yv)
+    if(vectorvel>p.max) then 
+      p.xv*=(p.max/vectorvel) 
+      p.yv*=(p.max/vectorvel)
     end
   end)
 
