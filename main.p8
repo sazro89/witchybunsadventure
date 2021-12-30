@@ -17,14 +17,13 @@ function _init()
   debug={}
 end
 
-function _update()
+function _update60()
   tick+=1
   s_friction(entities)
   s_walking(entities)
   s_playeranim(entities)
   s_maxvelocity(entities)
   s_collisions(entities)
-  -- s_movement(entities)
 end
 
 function _draw()
@@ -32,10 +31,12 @@ function _draw()
   map()
   s_draw(entities)
   
+  -- uncomment to check processor usage
+  -- debug[1]=stat(1)
  --debugging
- cursor(4,4)
- color(8)
- for txt in all(debug) do
-  print(txt)
- end
+  cursor(4,4)
+  color(8)
+  for txt in all(debug) do
+    print(txt)
+  end
 end

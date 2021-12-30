@@ -6,12 +6,12 @@ __lua__
 function mk_player(x,y)
  return ent{typ="player"}
    +c_position(x,y)
-   +c_physics(3,.5,.25)
+   +c_physics(1.0,.30,.15) -- max acc fric
    +c_control({dflt="dflt",
                side="side",
                up="up",
                down="down"})
-   +c_mapcollidable
+  --  +c_mapcollidable
    +c_draw("dflt",{
       dflt={spd=5,frm={55,56},ext={57,58}},
       side={spd=5,frm={49,50},ext={51,52}},
