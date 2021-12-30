@@ -10,7 +10,7 @@ function _init()
 
   -- place entities
   entities={
-    mk_player(72,64)
+    mk_player(328,64)
   }
 
   -- debug init
@@ -29,6 +29,7 @@ end
 function _draw()
   cls()
   map()
+  s_camerapos(entities)
   s_draw(entities)
   
   -- uncomment to check processor usage

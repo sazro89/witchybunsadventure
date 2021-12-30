@@ -144,6 +144,13 @@ function load_systems()
     move_y(amount)
   end)
 
+  -- Camera
+  s_camerapos=sys({"pos","cam"},function(e)
+    local x=mid(64,flr(e.pos.x),448)
+    local y=mid(64,flr(e.pos.y),192)
+    camera(x-64,y-64)
+  end)
+
   -- Drawing
   s_draw=sys({"pos","draw"},function(e)
     local anm=e.draw.anims[e.draw.curanim or "default"]

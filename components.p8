@@ -60,3 +60,10 @@ function load_components()
   -- commented out until we have an explicit use for this
   -- c_mapcollidable=cmp"mcol"
 end
+
+  c_cam=function(x,y)
+    return cmp("cam", {
+      x=x,
+      y=y
+    })
+  end
